@@ -9,11 +9,9 @@
 </p>
 
 # Project Overview
-this project uses a Kubernetes Cluster in Microsoft’s Azure Kubernetes Service(AKS) as the project infrastructure.
+this project uses a Kubernetes Cluster in Microsoft’s Azure Kubernetes Service(AKS) as a project infrastructure for a NodeWeightTracker application that would be on top of it.
 
-the NodeWeightTracker application would be on top of AKS.
-
-the project includes all the configuration files that are needed for running our application in the Kubernetes Cluster
+this project includes all the configuration files that are needed for running our application in the Kubernetes Cluster
 
 <p align="center">
   <img 
@@ -41,5 +39,14 @@ this CD/CD process is deploying our dockerized application into the Kubernetes c
     width="640"
     height="641"
     src="https://user-images.githubusercontent.com/21116260/167298980-89e53192-a810-4c2c-84c0-365b8e72d9b1.png"
+  >
+</p>
+
+# Cluster's Structure
+<p align="center">
+  <img 
+    width="816"
+    height="518"
+    src="https://user-images.githubusercontent.com/21116260/167302228-6f64a804-c419-4ee6-bc9c-da5d8052a145.png"
   >
 </p>
