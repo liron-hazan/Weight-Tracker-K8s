@@ -41,12 +41,3 @@ this CD/CD process is deploying our dockerized application into the Kubernetes c
     src="https://user-images.githubusercontent.com/21116260/167298980-89e53192-a810-4c2c-84c0-365b8e72d9b1.png"
   >
 </p>
-
-# Cluster's Structure
-<p align="center">
-  <img 
-    width="816"
-    height="518"
-    src="https://user-images.githubusercontent.com/21116260/167302498-7a3610ac-72bb-4ed3-9c3b-883f0c338d14.png"
-  >
-</p>
