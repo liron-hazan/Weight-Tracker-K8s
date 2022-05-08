@@ -43,10 +43,10 @@ this CD/CD process is deploying our dockerized application into the Kubernetes c
 
 # Cluster's Structure
 the cluster consists of:
-* Networok Balancer
+* Network Balancer
 * Ingress Controller
 * Replicaset of 3 Webapp Pods
-* DB with persistent volume
+* 1 DB Pod with persistent volume
 
 <p align="center">
   <img 
