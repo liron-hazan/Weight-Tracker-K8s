@@ -22,7 +22,6 @@ this project includes all the configuration files that are needed for running ou
 </p>
 
 
-
 <p align="center">
   <img 
     width="552"
@@ -43,10 +42,16 @@ this CD/CD process is deploying our dockerized application into the Kubernetes c
 </p>
 
 # Cluster's Structure
+the cluster consists of:
+* Networok Balancer
+* Ingress Controller
+* Replicaset of 3 Webapp Pods
+* DB with persistent volume
+
 <p align="center">
   <img 
     width="816"
     height="485"
-    src="https://user-images.githubusercontent.com/21116260/167303070-f84e478e-dbc9-43c2-85a8-dd867fbfade8.png"
+    src="https://user-images.githubusercontent.com/21116260/167305801-c49237c7-bbec-4f28-98a2-3107749b4352.png"
   >
 </p>
