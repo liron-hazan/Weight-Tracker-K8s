@@ -1,0 +1,144 @@
+name: 'K8S-CI-CD-$(rev:r)'
+
+trigger:
+- main
+
+pool:
+  name: "default"
+
+variables:
+  
+  tag: "v$(tag_number)"
+  tag_number: $[counter(variables['BuildDefinitionName'], 1)]
+  enviroment_name: 'Kubernetes-environment'
+  
+  container_registry_name: 'Azure-Container-Registry'
+  container_repository_name: 'lironiacr'
+  
+  acr_url: 'lironiacr.azurecr.io' 
+  acr_secret: 'acr-connection-secret'
+  
+ 
+stages:
+
+#Continuous Integration Process
+- stage: CI
+  displayName: Build
+  jobs:
+  - job: BuildAndPushDocker
+    workspace: 
+      clean: all
+    steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: $(container_registry_name)
+          repository: $(container_repository_name)
+          command: 'buildAndPush'
+          Dockerfile: '**/Dockerfile'
+          tags: $(tag)
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(Build.SourcesDirectory)/Manifests'
+          artifact: 'Manifests'
+          publishLocation: 'pipeline'
+
+# Deploy To AKS
+
+- stage: Deploy
+  displayName: Deploy to AKS
+  dependsOn: CI
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy To AKS
+    environment: 
+      name: $(enviroment_name)
+    pool:
+      name: "default"
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'Manifests'
+              targetPath: '$(Pipeline.Workspace)/Manifests'
+          
+          - task: KubernetesManifest@0
+            displayName: create acr connection secret 
+            inputs:
+              action: 'createSecret'
+              kubernetesServiceConnection: 'Kubernetes-environment-k8s-cluster-default-1651994530194'
+              namespace: 'default'
+              secretType: 'dockerRegistry'
+              secretName: '$(acr_secret)'
+              dockerRegistryEndpoint: '$(container_registry_name)'
+
+          - task: replacetokens@5
+            displayName: update tag number in deployment file
+            inputs:
+              rootDirectory: '$(Pipeline.Workspace)/Manifests/deployment'
+              targetFiles: 'deployment.yaml'
+              encoding: 'auto'
+              tokenPattern: 'custom'
+              tokenPrefix: '#'
+              tokenSuffix: '#'
+              writeBOM: false
+              actionOnMissing: 'warn'
+              keepToken: false
+     
+          - task: DownloadSecureFile@1
+            displayName: download secrets file 
+            name: app_secret
+            inputs:
+              secureFile: 'secrets.yaml'
+          
+          - task: DownloadSecureFile@1
+            displayName: download secrets file 
+            name: postgres_secret
+            inputs:
+              secureFile: 'potgres_secret.yaml'
+
+          - task: Bash@3
+            displayName: deploy weight tracker and postgres secrets
+            inputs:
+              targetType: 'inline'
+              script: 'kubectl apply -f $(app_secret.secureFilePath) -f $(postgres_secret.secureFilePath)'
+              
+          - task: KubernetesManifest@0
+            displayName: deploy postgres
+            inputs:
+              action: 'deploy'
+              kubernetesServiceConnection: 'Kubernetes-environment-k8s-cluster-default-1651994530194'
+              namespace: 'default'
+              manifests: '$(Pipeline.Workspace)/Manifests/postgres/*'
+            
+          - task: KubernetesManifest@0
+            displayName: deploy postgres service
+            inputs:
+              action: 'deploy'
+              kubernetesServiceConnection: 'Kubernetes-environment-k8s-cluster-default-1651994530194'
+              namespace: 'default'
+              manifests: '$(Pipeline.Workspace)/Manifests/services/postgres_service.yaml'
+
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                kubectl apply -f $(Pipeline.Workspace)/Manifests/deployment
+                kubectl apply -f $(Pipeline.Workspace)/Manifests/ingress
+                kubectl apply -f $(Pipeline.Workspace)/Manifests/services/app_service.yaml
+              
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                kubectl apply -f deployment.yaml
+                if !kubectl rollout status deployment deployment; then
+                    kubectl rollout undo deployment deployment
+                    kubectl rollout status deployment deployment
+                    exit 1
+                fi
