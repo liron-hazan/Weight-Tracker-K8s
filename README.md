@@ -47,6 +47,6 @@ this CD/CD process is deploying our dockerized application into the Kubernetes c
   <img 
     width="816"
     height="518"
-    src="https://user-images.githubusercontent.com/21116260/167302228-6f64a804-c419-4ee6-bc9c-da5d8052a145.png"
+    src="https://user-images.githubusercontent.com/21116260/167302498-7a3610ac-72bb-4ed3-9c3b-883f0c338d14.png"
   >
 </p>
