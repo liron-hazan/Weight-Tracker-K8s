@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: weight-tracker-service
+  labels:
+    app: weight-tracker
+spec:
+  type: ClusterIP
+  selector:
+    app: weight-tracker
+  ports:
+    - targetPort: 8080	
+      port: 80
