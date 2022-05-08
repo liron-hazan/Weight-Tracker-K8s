@@ -1,30 +1,57 @@
-# Node.js Weight Tracker
+# kubernetes (K8s)
 
-![Demo](docs/build-weight-tracker-app-demo.gif)
+<p align="center">
+  <img 
+    width="100"
+    height="97"
+    src="https://user-images.githubusercontent.com/21116260/167299259-8f357d36-ac0e-46fd-8888-4e096950cd2e.png"
+  >
+</p>
 
-This sample application demonstrates the following technologies.
+# Project Overview
+this project uses a Kubernetes Cluster in Microsoft’s Azure Kubernetes Service(AKS) as a project infrastructure for a NodeWeightTracker application that would be on top of it.
 
-* [hapi](https://hapi.dev) - a wonderful Node.js application framework
-* [PostgreSQL](https://www.postgresql.org/) - a popular relational database
-* [Postgres](https://github.com/porsager/postgres) - a new PostgreSQL client for Node.js
-* [Vue.js](https://vuejs.org/) - a popular front-end library
-* [Bulma](https://bulma.io/) - a great CSS framework based on Flexbox
-* [EJS](https://ejs.co/) - a great template library for server-side HTML templates
+this project includes all the configuration files that are needed for running our application in the Kubernetes Cluster
 
-**Requirements:**
+<p align="center">
+  <img 
+    width="633"
+    height="217"
+    src="https://user-images.githubusercontent.com/21116260/167298972-fe24143a-113e-4982-a4d8-1ad90ae88a2c.png"
+  >
+</p>
 
-* [Node.js](https://nodejs.org/) 14.x
-* [PostgreSQL](https://www.postgresql.org/) (can be installed locally using Docker)
-* [Free Okta developer account](https://developer.okta.com/) for account registration, login
 
-## Install and Configuration
+<p align="center">
+  <img 
+    width="552"
+    height="226"
+    src="https://user-images.githubusercontent.com/21116260/167298974-7fbb5c23-6e88-40d2-9ebf-65acd7f3a8f6.png"
+  >
+</p>
 
-1. Clone or download source files
-1. Run `npm install` to install dependencies
-1. If you don't already have PostgreSQL, set up using Docker
-1. Create a [free Okta developer account](https://developer.okta.com/) and add a web application for this app
-1. Copy `.env.sample` to `.env` and change the `OKTA_*` values to your application
-1. Initialize the PostgreSQL database by running `npm run initdb`
-1. Run `npm run dev` to start Node.js
+# CI/CD process 
+this CD/CD process is deploying our dockerized application into the Kubernetes cluster.
 
-The associated blog post goes into more detail on how to set up PostgreSQL with Docker and how to configure your Okta account.
+<p align="center">
+  <img 
+    width="640"
+    height="641"
+    src="https://user-images.githubusercontent.com/21116260/167298980-89e53192-a810-4c2c-84c0-365b8e72d9b1.png"
+  >
+</p>
+
+# Cluster's Structure
+the cluster consists of:
+* Network Balancer
+* Ingress Controller
+* Replicaset of 3 Webapp Pods
+* 1 DB Pod with persistent volume
+
+<p align="center">
+  <img 
+    width="816"
+    height="485"
+    src="https://user-images.githubusercontent.com/21116260/167305801-c49237c7-bbec-4f28-98a2-3107749b4352.png"
+  >
+</p>
